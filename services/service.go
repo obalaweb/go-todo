@@ -139,16 +139,24 @@ func (t *TodoList) GetTodos() ([]*Todo, error) {
 // }
 // return todo, nil
 
-func (t *TodoList) UpdateTodo(id string, title, description string, dueDate string, priority Priority, labels []string) error {
+func (t *TodoList) UpdateTodo(id string, title string, description string, dueDate string, completed bool) error {
 	todo, err := t.GetTodo(id)
 	if err != nil {
 		return err
 	}
+
+	_, err = db.DB.Exec("UPDATE todos SET title =?, description =? , due_date =?, completed = ? WHERE id = ?",
+		title, description, dueDate, completed, id,
+	)
+
+	if err != nil {
+		return err
+	}
+
 	todo.Title = title
 	todo.Description = description
 	todo.DueDate = dueDate
-	todo.priority = priority
-	todo.labels = labels
+	todo.Completed = completed
 	return nil
 }
 

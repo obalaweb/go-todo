@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"todo/db"
 	"todo/services"
 
@@ -17,7 +19,7 @@ func main() {
 
 startOver:
 	choice := 0
-	fmt.Printf("What do you want to do?\n 1. List all todos\n 2. Add new Todo\n 3. Get Todo by ID\n 4. Update Todo\n 5. Delete a Todo\n 6. Complete a Todo \n")
+	fmt.Printf("What do you want to do?\n 1. List all Todos\n 2. Add new Todo\n 3. Get Todo by ID\n 4. Update Todo\n 5. Delete a Todo\n 6. Complete a Todo \n")
 	fmt.Scanln(&choice)
 
 	if choice == 0 {
@@ -89,26 +91,21 @@ func listTodos() {
 }
 
 func addTodo() {
-	var title, description, dueDate string
 	var priority services.Priority
 	var labels []string
+	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter Todo Title: ")
-	fmt.Scanln(&title)
+	title, _ := reader.ReadString('\n')
+	title = strings.TrimSpace(title)
 
 	fmt.Println("Enter Todo Description: ")
-	result := make([]byte, 1024)
-	in := bufio.NewReader(os.Stdin)
-	_, errs := in.Read(result)
-	if errs != nil {
-		log.Fatal(errs)
-		return
-	}
-
-	description = string(result)
+	description, _ := reader.ReadString('\n')
+	description = strings.TrimSpace(description)
 
 	fmt.Print("Enter Todo Due Date (YYYY-MM-DD): ")
-	fmt.Scanln(&dueDate)
+	dueDate, _ := reader.ReadString('\n')
+	dueDate = strings.TrimSpace(dueDate)
 
 	fmt.Print("Enter Todo Priority (0: Lowest, 1: Low, 2: Medium): ")
 	fmt.Scanln(&priority)
@@ -142,25 +139,45 @@ func updateTodo(id string) {
 		log.Fatal(err)
 	}
 
-	var title, description, dueDate string
+	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Enter Todo Title (leave blank to keep current): ")
-	fmt.Scanln(&title)
-	if title != "" {
-		todo.Title = title
+	fmt.Print("Enter new title: ")
+	title, _ := reader.ReadString('\n')
+	title = strings.TrimSpace(title)
+	if title == "" {
+		title = todo.Title
 	}
 
-	fmt.Print("Enter Todo Description (leave blank to keep current): ")
-	fmt.Scanln(&description)
-	if description != "" {
-		todo.Description = description
+	fmt.Print("Enter new description: ")
+	description, _ := reader.ReadString('\n')
+	description = strings.TrimSpace(description)
+	if description == "" {
+		description = todo.Description
 	}
 
-	fmt.Print("Enter Todo Due Date (YYYY-MM-DD) (leave blank to keep current): ")
-	fmt.Scanln(&dueDate)
-	if dueDate != "" {
-		todo.DueDate = dueDate
+	fmt.Print("Enter new due date (YYYY-MM-DD): ")
+	dueDate, _ := reader.ReadString('\n')
+	dueDate = strings.TrimSpace(dueDate)
+	if dueDate == "" {
+		dueDate = todo.DueDate
 	}
+
+	fmt.Print("Enter completed status (true/false): ")
+	completedStr, _ := reader.ReadString('\n')
+	completedStr = strings.TrimSpace(completedStr)
+	completed, err := strconv.ParseBool(completedStr)
+	if err != nil {
+		fmt.Println("Invalid completed status.")
+		return
+	}
+
+	err = services.NewTodoList().UpdateTodo(id, title, description, dueDate, completed)
+	if err != nil {
+		fmt.Println("Error updating todo:", err)
+		return
+	}
+
+	fmt.Println("Todo updated successfully!")
 }
 
 func deleteTodo(id string) {
