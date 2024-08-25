@@ -1,0 +1,6 @@
+github.com/markkurossi/tabulate v0.0.0-20230223130100-d4965869b123 h1:aGg9ACNKrIa6lZ18dNT9ZsFcXga3obyOAl5Tiyx2txE=
+github.com/markkurossi/tabulate v0.0.0-20230223130100-d4965869b123/go.mod h1:qPNWLW3h4173ZWYHjOgJ1wbvNyLuE1fboZilv97Aq7k=
+github.com/mattn/go-sqlite3 v1.14.22 h1:2gZY6PC6kBnID23Tichd1K+Z0oS6nE/XwU+Vz/5o4kU=
+github.com/mattn/go-sqlite3 v1.14.22/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
+golang.org/x/text v0.7.0 h1:4BRB4x83lYWy72KwLD/qYDuTu7q9PjSagHvijDw7cLo=
+golang.org/x/text v0.7.0/go.mod h1:mrYo+phRRbMaCq/xk9113O4dZlRixOauAjOtrjsXDZ8=
