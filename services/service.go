@@ -176,7 +176,14 @@ func (t *TodoList) DeleteTodo(id string) error {
 }
 
 func (t *TodoList) CompleteTodo(id string) error {
+	_, err := db.DB.Exec("UPDATE todos SET completed = ? WHERE id = ?", true, id)
+
+	if err != nil {
+		return err
+	}
+
 	todo, err := t.GetTodo(id)
+
 	if err != nil {
 		return err
 	}
@@ -185,10 +192,18 @@ func (t *TodoList) CompleteTodo(id string) error {
 }
 
 func (t *TodoList) UncompleteTodo(id string) error {
-	todo, err := t.GetTodo(id)
+	_, err := db.DB.Exec("UPDATE todos SET completed = ? WHERE id = ?", false, id)
+
 	if err != nil {
 		return err
 	}
+
+	todo, err := t.GetTodo(id)
+
+	if err != nil {
+		return err
+	}
+
 	todo.Completed = false
 	return nil
 }

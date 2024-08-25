@@ -129,7 +129,21 @@ func getTodoById(id string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Title: %s\nDescription: %s\nDue Date: %s\n", todo.Title, todo.Description, todo.DueDate)
+	tab := tabulate.New(tabulate.Unicode)
+
+	tab.Header("id")
+	tab.Header("Title").SetAlign(tabulate.ML)
+	tab.Header("Description").SetAlign(tabulate.ML)
+	tab.Header("Completed").SetAlign(tabulate.ML)
+
+	row := tab.Row()
+	row.Column(todo.Id)
+	row.Column(todo.Title)
+	row.Column(todo.Description)
+	row.Column(fmt.Sprintf("%v", todo.Completed))
+
+	row.Tab.Print(os.Stdin)
+
 }
 
 func updateTodo(id string) {
